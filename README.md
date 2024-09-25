@@ -1,6 +1,9 @@
 # CRWarAnalysis
 
-Esse é um projeto que automatiza o processo de análise da guerra do clash royale controlado por parâmetros globais.
+Esse é um projeto que automatiza o processo de análise da guerra do clash royale controlado por parâmetros globais.  
+É dividido em duas análises:  
+- Análise de Guerra  
+- Análise de Promoção
 
 ## Faltando
 
@@ -10,4 +13,4 @@ Esse é um projeto que automatiza o processo de análise da guerra do clash roya
 - [ ] Integrar banco de dados pra ter histórico de análise e de blacklist  
 - [X] Subir o projeto em uma VM ou cron no Termux pra rodar automaticamente  
 - [X] Formatar o e-mail como HTML pra colocar os dados em uma tabela e facilitar a visualização  
-
+- [ ] 
