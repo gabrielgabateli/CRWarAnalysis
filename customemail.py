@@ -11,13 +11,11 @@ def enviarEmail(data_formatada, expulsos: dict, blacklist):
     msg['From'] = REMETENTE
     msg['To'] = DESTINATARIOS
     msg['Subject'] = f"CRWarAnalysis {data_formatada}"
-    '''
-    '''
-    mensagem = f"Expulsos (Menos de 400 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in expulsos.items())}"
-    mensagem += '\n\n'
-    mensagem += f"Blacklist (Menos de 1800 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in blacklist.items())}"
-    mensagem += '\n\n'
-    mensagem += 'https://royaleapi.com/clan/Q0V2YYUL/war/analytics'
+	
+ #   mensagem = f"Expulsos (Menos de 400 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in expulsos.items())}"
+  #  mensagem += '\n\n'
+   # mensagem += f"Blacklist (Menos de 1800 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in blacklist.items())}"
+  #  mensagem += '\n\n'
 
 
     # # Cria as seções formatadas separadamente
@@ -114,8 +112,9 @@ def enviarEmail(data_formatada, expulsos: dict, blacklist):
         </tr>
         """
         i += 1
-    mensagem += "</table>"
-    
+    mensagem += "</table><br>"
+    mensagem += 'https://royaleapi.com/clan/Q0V2YYUL/war/analytics'
+  
 
     # Corpo da mensagem
     msg.attach(MIMEText(mensagem, 'html'))
