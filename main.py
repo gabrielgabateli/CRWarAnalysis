@@ -5,18 +5,32 @@ from datetime import datetime
 import json
 from customemail import *
 
-url = f'https://api.clashroyale.com/v1/clans/%23{CLAN_TAG}/riverracelog?limit={LIMIT}'
-
 headers = {
     'Accept': 'application/json',
     'authorization': f'Bearer {API_TOKEN}'
 }
 
+# Pegando as pontuações
+url = f'https://api.clashroyale.com/v1/clans/%23{CLAN_TAG}/riverracelog?limit={LIMIT}'
 response = requests.get(url, headers=headers)
+
+# Pegando quem ainda tá no clã
+
+url = f'https://api.clashroyale.com/v1/clans/%23{CLAN_TAG}/members?limit={50}'
+response_playerNoCla = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     river_log = response.json()
-    
+    players_no_cla = response_playerNoCla.json()
+
+
+    players_atuais = []
+    # Montando a lista de players que estão no clã
+    for player in players_no_cla['items']:
+        players_atuais.append(player['name'])
+            
+        
+        
     # Pegando e formatando a data
     for race in river_log['items']:  
         data = race['createdDate'][:8]
@@ -33,9 +47,9 @@ if response.status_code == 200:
                 expulsos = {}
                 blacklist = {}
                 for player in lista_pontuacao:
-                    if lista_pontuacao[player] <= MIN_EXPULSO:
+                    if lista_pontuacao[player] <= MIN_EXPULSO and player in players_atuais:
                         expulsos[player] = lista_pontuacao[player]
-                    elif MIN_EXPULSO < lista_pontuacao[player] < MIN_PONTOS:
+                    elif MIN_EXPULSO < lista_pontuacao[player] < MIN_PONTOS and player in players_atuais:
                         blacklist[player] = lista_pontuacao[player]
                 
                 enviarEmail(data_formatada, expulsos, blacklist)
