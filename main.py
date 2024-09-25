@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from variables import *
 from key import *
 import requests
