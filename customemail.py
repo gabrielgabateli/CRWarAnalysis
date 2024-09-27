@@ -4,117 +4,76 @@ from email.mime.text import MIMEText
 from key import PASSWORD
 from variables import DESTINATARIOS, REMETENTE
 
-def enviarEmail(data_formatada, expulsos: dict, blacklist):
-
+def enviarEmail(data_formatada, jogadores_analise):
     # Configuração da mensagem
     msg = MIMEMultipart()
     msg['From'] = REMETENTE
     msg['To'] = DESTINATARIOS
     msg['Subject'] = f"CRWarAnalysis {data_formatada}"
-	
- #   mensagem = f"Expulsos (Menos de 400 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in expulsos.items())}"
-  #  mensagem += '\n\n'
-   # mensagem += f"Blacklist (Menos de 1800 pontos):\n {'\n '.join(f'{player}: {pontos} pontos' for player, pontos in blacklist.items())}"
-  #  mensagem += '\n\n'
-
-
-    # # Cria as seções formatadas separadamente
-    # expulsos = '\n'.join(f'{player}: {pontos} pontos' for player, pontos in expulsos.items())
-    # blacklist = '\n'.join(f'{player}: {pontos} pontos' for player, pontos in blacklist.items())
-
-    # # Concatena as seções em uma única mensagem
-    # mensagem = (
-    # f"Expulsos (Menos de 400 pontos):\n{expulsos}\n"
-    # f"--------------------------------------------------------------------\n" 
-    # f"Blacklist (Menos de 1800 pontos):\n{blacklist}"
-    # )
-
 
     # Formatando a mensagem como uma tabela em HTML
-
     mensagem = """
     <html>
     <head>
     <style>
     table {
-      width: 40%;
-      border-collapse: collapse;
+        width: 40%;
+        border-collapse: collapse;
     }
     @media only screen and (max-width: 600px) {
-      table {
-      width: 100%;
+        table {
+            width: 100%;
         }
     }
     th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: center;
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
     }
     th {
-      background-color: #E8E8E8;
+        background-color: #E8E8E8;
     }
     .titulo {
-      background-color: #4CAF50;
-      color: white;
+        background-color: #4CAF50;
+        color: white;
     }
     .blacklist {
-      background-color: #FFA500;
+        background-color: #FFA500;
     }
     .expulso {
-      background-color: #FF5733;
+        background-color: #FF5733;
     }
-  </style>
-</head>
-<body>
-  <h2>Relatório de Pontuações</h2>
-  <table>
+    </style>
+    </head>
+    <body>
+    <h2>Relatório de Pontuações</h2>
+    <table>
     <tr>
-      <th class="titulo">Nome do Jogador</th>
-      <th class="titulo">Pontuação última guerra</th>
-      <th class="titulo">Pontuação penúltima guerra</th>
-      <th class="titulo">Status</th>
+        <th class="titulo">Nome do Jogador</th>
+        <th class="titulo">Pontuação última guerra</th>
+        <th class="titulo">Pontuação penúltima guerra</th>
+        <th class="titulo">Status</th>
     </tr>
     """
-    
-    # Populando a tabela com expulsos
-    i = 0
-    for nome, pontos in expulsos.items():
-        mensagem += f""" 
-            <tr>
+
+    # Ordenando jogadores por status
+    ordem_status = {'expulso': 1, 'blacklist': 2, 'expulso por blacklist': 3}
+    jogadores_ordenados = sorted(jogadores_analise.items(), key=lambda x: ordem_status.get(x[1][2], 4))
+
+    # Populando a tabela com os jogadores ordenados
+    for nome, (pontos_recentes, pontos_antigos, status) in jogadores_ordenados:
+        status_class = "blacklist" if status == "blacklist" else "expulso"
+        mensagem += f"""
+        <tr>
             <th>{nome}</th>
-            <th>{pontos}</th>
-            <th>Pontuação penúltima guerra</th>
-            <th class="expulso">Expulso</th>
+            <th>{pontos_recentes if pontos_recentes is not None else 'N/A'}</th>
+            <th>{pontos_antigos if pontos_antigos is not None else 'N/A'}</th>
+            <th class="{status_class}">{status.capitalize()}</th>
         </tr>
         """
-        i += 1
-    mensagem += "</table>"
-    mensagem += "<br>"
-    mensagem += "<table>"
-    mensagem +=  """ 
-      <tr>
-      <th class="titulo">Nome do Jogador</th>
-      <th class="titulo">Pontuação última guerra</th>
-      <th class="titulo">Pontuação penúltima guerra</th>
-      <th class="titulo">Status</th>
-    </tr>
-    """
-    
-    # Populando a tabela com blacklist
-    i = 0
-    for nome, pontos in blacklist.items():
-        mensagem += f""" 
-            <tr>
-            <th>{nome}</th>
-            <th>{pontos}</th>
-            <th>Pontuação penúltima guerra</th>
-            <th class="blacklist">Blacklist</th>
-        </tr>
-        """
-        i += 1
+
     mensagem += "</table><br>"
     mensagem += 'https://royaleapi.com/clan/Q0V2YYUL/war/analytics'
-  
 
     # Corpo da mensagem
     msg.attach(MIMEText(mensagem, 'html'))
@@ -129,5 +88,3 @@ def enviarEmail(data_formatada, expulsos: dict, blacklist):
     # Envio do email
     servidor.send_message(msg)
     servidor.quit()
-
-

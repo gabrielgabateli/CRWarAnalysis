@@ -12,6 +12,7 @@ Esse é um projeto que automatiza o processo de análise da guerra do clash roya
 ## TODO
 
 - [ ] (GUERRA) Verificar se o player está na primeira blacklist ou na segunda blacklist seguida
+- [ ] (GUERRA) Montar uma tabela de decks usados por player com o critério (8 DECKS USADOS OU MENOS)
 - [X] (GUERRA) Verificar se o player ainda está no clã, se não estiver não precisa mostrar o nome dele na lista de expulsos  
 - [X] (GUERRA) Adicionar variáveis de pontuação mínima, intermediária etc no arquivo variables.py para controlar melhor  
 - [ ] (GUERRA) Integrar banco de dados pra ter histórico de análise e de blacklist  
